@@ -8,6 +8,7 @@
     state: started
     enabled: true
 
+
 - name: Log in to registry
   community.docker.docker_login:
     registry_url: "{{ registry_url }}"
@@ -17,20 +18,10 @@
   no_log: true
   notify:
     - Pull latest image
-
-- name: Log out of registry
-  community.docker.docker_login:
-    registry_url: "{{ registry_url }}"
-    state: absent
-  no_log: true
-
-- name: Remove old container
-  community.docker.docker_container:
-    name: "{{ container_name }}"
-    state: absent
-    force_kill: true
-  notify:
+    - Log out of registry
+    - Remove old container
     - Start updated container
+
 
 - name: Remove dangling images
   community.docker.docker_prune:

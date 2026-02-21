@@ -9,6 +9,20 @@
     source: pull
     force_source: true
 
+- name: Log out of registry
+  community.docker.docker_login:
+    registry_url: "{{ registry_url }}"
+    state: absent
+  no_log: true
+
+- name: Remove old container
+  community.docker.docker_container:
+    name: "{{ container_name }}"
+    state: absent
+    force_kill: true
+  notify:
+    - Start updated container
+
 - name: Start updated container
   community.docker.docker_container:
     name: "{{ container_name }}"
