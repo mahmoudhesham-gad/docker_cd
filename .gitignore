@@ -1,0 +1,70 @@
+# ─── Secrets & Sensitive Data ────────────────────────────────────────────────
+*/secrets/
+secrets/
+*secrets.yml
+*secret.yml
+*vault.yml
+*.vault
+.vault_pass
+.vault_pass.txt
+vault_password_file
+*_vault_password*
+
+# Ansible Vault encrypted files (keep pattern, exclude actual secrets)
+# Uncomment if you store encrypted vars separately:
+# !vars/vault.yml
+
+# ─── Ansible Runtime Files ────────────────────────────────────────────────────
+*.retry
+.ansible/
+ansible.log
+
+# ─── Python / Virtualenv ──────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+env/
+.Python
+
+# ─── Editor & IDE ─────────────────────────────────────────────────────────────
+# VSCode
+.vscode/
+*.code-workspace
+
+# JetBrains (PyCharm, IntelliJ, etc.)
+.idea/
+*.iml
+
+# Vim / Neovim
+*.swp
+*.swo
+*~
+.netrwhist
+
+# Emacs
+\#*\#
+.\#*
+
+# ─── OS Files ─────────────────────────────────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# ─── Molecule (testing) ───────────────────────────────────────────────────────
+.molecule/
+molecule/*/.cache/
+molecule/*/molecule.yml.lock
+
+# ─── Misc ─────────────────────────────────────────────────────────────────────
+*.log
+*.tmp
+*.bak
+*.orig
+.cache/

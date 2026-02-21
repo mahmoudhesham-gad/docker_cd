@@ -1,0 +1,14 @@
+#SPDX-License-Identifier: MIT-0
+---
+# put sercets in a vault provide container sercets under container_env: [dict]
+# vars file for container_CD
+target_host: star_server # provided hosts in inverntory
+registry_url: "docker.io"
+
+# provide own data
+# image_name: "username/repostiory"
+# container_name: "container_name"
+# image_tag: "image_tag"
+# container_ports:
+#   - "host_port:target_port"
+
