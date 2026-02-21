@@ -1,38 +1,110 @@
-Role Name
-=========
+# container_CD
 
-A brief description of the role goes here.
+An Ansible role that performs a **continuous delivery** workflow for Docker containers. It logs into a container registry, pulls the latest image, replaces the running container, and cleans up dangling images — all idempotently.
 
-Requirements
-------------
+---
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+## Requirements
 
-Role Variables
---------------
+- Docker must be installed and accessible on the target host.
+- The `community.docker` Ansible collection must be installed:
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+```bash
+ansible-galaxy collection install community.docker
+```
 
-Dependencies
-------------
+---
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+## Role Variables
 
-Example Playbook
-----------------
+### Required (must be provided per-deployment)
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+| Variable | Description |
+|---|---|
+| `image_name` | Docker image name, e.g. `username/repository` |
+| `container_name` | Name of the container to manage |
+| `registry_username` | Registry login username — **store in an Ansible Vault** |
+| `registry_password` | Registry login password — **store in an Ansible Vault** |
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+### Optional (have sensible defaults)
 
-License
--------
+| Variable | Default | Description |
+|---|---|---|
+| `image_tag` | `latest` | Tag of the image to pull and run |
+| `container_ports` | `[]` | List of port mappings, e.g. `["80:80"]` |
+| `container_env` | `{}` | Dict of environment variables passed into the container |
+| `container_volumes` | `[]` | List of volume mounts |
+| `container_networks` | `[]` | List of Docker networks to attach the container to |
+| `container_restart_policy` | `unless-stopped` | Container restart policy |
 
-BSD
+### Role-level configuration (`vars/main.yml`)
 
-Author Information
-------------------
+| Variable | Default | Description |
+|---|---|---|
+| `target_host` | `star_server` | Inventory host or group to target |
+| `registry_url` | `docker.io` | Container registry URL |
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+---
+
+## Secrets
+
+Sensitive variables (`registry_username`, `registry_password`, `container_env`) should **never** be committed in plain text. Use Ansible Vault to encrypt them:
+
+```bash
+ansible-vault create vars/secrets.yml
+```
+
+The `vars/` directory has a `.gitignore` that excludes environment-specific subdirectories from version control.
+
+---
+
+## Dependencies
+
+- Collection: [`community.docker`](https://docs.ansible.com/ansible/latest/collections/community/docker/)
+
+---
+
+## Example Playbook
+
+```yaml
+- hosts: star_server
+  roles:
+    - role: container_CD
+      vars:
+        image_name: "myuser/myapp"
+        image_tag: "1.2.3"
+        container_name: "myapp"
+        container_ports:
+          - "8080:80"
+        container_env:
+          DATABASE_URL: "{{ db_url }}"
+          SECRET_KEY: "{{ app_secret }}"
+        container_volumes:
+          - "/data/myapp:/app/data"
+        registry_username: "{{ vault_registry_username }}"
+        registry_password: "{{ vault_registry_password }}"
+```
+
+---
+
+## Workflow
+
+The role executes the following steps in order:
+
+1. **Ensure Docker is running** — starts and enables the Docker service.
+2. **Log in to registry** — authenticates with the registry; triggers the `Pull latest image` handler.
+3. **Log out of registry** — immediately revokes the session after the pull is complete.
+4. **Remove old container** — force-kills and removes the existing container; triggers the `Start updated container` handler.
+5. **Prune dangling images** — cleans up unused image layers.
+
+---
+
+## License
+
+MIT-0
+
+---
+
+## Author
+
+Mahmoud Hesham — [mahmoudhesham656@gmail.com](mailto:mahmoudhesham656@gmail.com)
