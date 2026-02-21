@@ -19,9 +19,7 @@
   notify:
     - Pull latest image
     - Log out of registry
-    - Remove old container
     - Start updated container
-
 
 - name: Remove dangling images
   community.docker.docker_prune:

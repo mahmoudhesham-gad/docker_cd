@@ -8,6 +8,8 @@
     tag: "{{ image_tag | default('latest') }}"
     source: pull
     force_source: true
+  notify:
+    - Remove old container
 
 - name: Log out of registry
   community.docker.docker_login:
@@ -20,8 +22,6 @@
     name: "{{ container_name }}"
     state: absent
     force_kill: true
-  notify:
-    - Start updated container
 
 - name: Start updated container
   community.docker.docker_container:
