@@ -1,13 +1,26 @@
 #SPDX-License-Identifier: MIT-0
 ---
-# put sercets in a vault provide container sercets under container_env: [dict]
 # vars file for container_CD
-registry_url: "docker.io"
 
-# provide own data
-# image_name: "username/repostiory"
-# container_name: "container_name"
-# image_tag: "image_tag"
-# container_ports:
-#   - "host_port:target_port"
+# ── Required ────────────────────────────────────────────────────────────────
+# Must be provided per deployment (no defaults exist for these):
+#
+# image_name: "username/repository"
+# container_name: "my_container"
+#
+# Secrets — provide via Ansible Vault:
+# registry_username: "your_username"
+# registry_password: "your_password"
+# container_env:       # key/value pairs injected as env vars
+#   SECRET_KEY: "..."
+#   DATABASE_URL: "..."
 
+# ── Optional (overrides defaults) ───────────────────────────────────────────
+# Defaults are declared in defaults/main.yml; override here only if needed:
+#
+# registry_url: "docker.io"
+# image_tag: "latest"
+# container_restart_policy: "unless-stopped"
+# container_ports: []
+# container_volumes: []
+# container_networks: []
