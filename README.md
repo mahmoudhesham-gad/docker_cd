@@ -41,7 +41,6 @@ ansible-galaxy collection install community.docker
 
 | Variable | Default | Description |
 |---|---|---|
-| `target_host` | `star_server` | Inventory host or group to target |
 | `registry_url` | `docker.io` | Container registry URL |
 
 ---
@@ -67,7 +66,7 @@ The `vars/` directory has a `.gitignore` that excludes environment-specific subd
 ## Example Playbook
 
 ```yaml
-- hosts: star_server
+- hosts: host
   roles:
     - role: container_CD
       vars:
