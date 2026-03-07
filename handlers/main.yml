@@ -2,6 +2,15 @@
 ---
 # handlers file for container_CD
 #
+- name: Log in to registry
+  community.docker.docker_login:
+    registry_url: "{{ registry_url }}"
+    username: "{{ registry_username }}"
+    password: "{{ registry_password }}"
+    reauthorize: true
+  no_log: true
+  when: requires_repository_login
+
 - name: Pull latest image
   community.docker.docker_image:
     name: "{{ image_name }}"
@@ -16,6 +25,7 @@
     registry_url: "{{ registry_url }}"
     state: absent
   no_log: true
+  when: requires_repository_login
 
 - name: Remove old container
   community.docker.docker_container:
@@ -34,3 +44,4 @@
     env: "{{ container_env }}"
     volumes: "{{ container_volumes }}"
     networks: "{{ container_networks }}"
+    network_mode: "{{ container_network_mode }}"

@@ -3,8 +3,10 @@
 # defaults file for container_CD
 registry_url: "docker.io"
 image_tag: "latest"
+requires_repository_login: false
 container_restart_policy: "unless-stopped"
 container_ports: []
 container_env: {}
 container_volumes: []
 container_networks: []
+container_network_mode: default
