@@ -7,6 +7,11 @@
     name: docker
     state: started
     enabled: true
+
+- name: Trigger CD deployment handlers
+  ansible.builtin.debug:
+    msg: "Triggering CD handlers for container deployment"
+  changed_when: true
   notify:
     - Log in to registry
     - Pull latest image
